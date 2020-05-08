@@ -16,4 +16,6 @@ export default class Idea extends Model<Idea> {
 
   @CreateDateColumn()
   createdAt: Date;
+
+
 }
