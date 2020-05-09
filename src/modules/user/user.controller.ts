@@ -5,6 +5,7 @@ import { UserDto } from './models/user.dto';
 import { ResponseMessage, LoginResponse } from '../../common/models/responses.model';
 import { AuthService } from '../auth/auth.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { CurrentUser } from './current-user.decorator';
 
 @Controller('user')
 export class UserController {
@@ -25,7 +26,7 @@ export class UserController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  public async doFindAll(): Promise<UserModel[]> {
+  public async doFindAll(@CurrentUser() user): Promise<UserModel[]> {
     return await this.userService.findAll();
   }
 

@@ -1,5 +1,7 @@
-import { Table, Model, Unique, AutoIncrement, Column } from "sequelize-typescript";
+import { Table, Model, Unique, AutoIncrement, Column, BelongsTo, ForeignKey } from "sequelize-typescript";
 import { CreateDateColumn } from "typeorm";
+
+import UserEntity from "../user/models/user.entity";
 
 @Table({ tableName: 'idea' })
 export default class Idea extends Model<Idea> {
@@ -17,5 +19,10 @@ export default class Idea extends Model<Idea> {
   @CreateDateColumn()
   createdAt: Date;
 
+  @BelongsTo(() => UserEntity)
+  user: UserEntity;
 
+  @ForeignKey(() => UserEntity)
+  @Column({ field: 'user_id' })
+  userId: number;
 }

@@ -1,6 +1,9 @@
 import { Injectable } from "@nestjs/common";
+
 import Idea from "./idea.entity";
 import { IdeaModel } from "./idea.model";
+import UserEntity from "../user/models/user.entity";
+import logger from "../../common/utils/logger.util";
 
 @Injectable()
 export class IdeaRepository {
@@ -13,13 +16,18 @@ export class IdeaRepository {
   }
 
   public async findAll(): Promise<IdeaModel[]> {
-    const ideaEntitys = await Idea.findAll();
+    try {
+      const ideaEntitys = await Idea.findAll({ include: [UserEntity] });
 
-    if (ideaEntitys) {
-      return this.toModels(ideaEntitys);
+      if (ideaEntitys) {
+        return this.toModels(ideaEntitys);
+      }
+
+    } catch (err) {
+      logger.error(err, 'Idea repo');
+
+      return [];
     }
-
-    return [];
   }
 
   public async findById(id: number): Promise<IdeaModel> {
@@ -62,7 +70,8 @@ export class IdeaRepository {
       id: entity.id,
       idea: entity.idea,
       descripion: entity.description,
-      createdAt: entity.createdAt
+      createdAt: entity.createdAt,
+      userId: entity.userId
     })
   }
 
@@ -79,6 +88,7 @@ export class IdeaRepository {
     entity.idea = model.idea;
     entity.description = model.descripion;
     entity.createdAt = model.createdAt;
+    entity.userId = model.userId
 
     return entity;
   }

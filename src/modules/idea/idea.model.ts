@@ -3,6 +3,7 @@ export class IdeaModel {
   idea: string;
   descripion: string;
   createdAt: Date;
+  userId: number;
 
   constructor(fields: Partial<IdeaModel>) {
     if (fields) {

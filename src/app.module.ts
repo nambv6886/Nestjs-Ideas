@@ -7,6 +7,7 @@ import { IdeaModule } from './modules/idea/idea.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { SharedModule } from './shared/shared.module';
+import { AuthService } from './modules/auth/auth.service';
 
 @Module({
   imports: [

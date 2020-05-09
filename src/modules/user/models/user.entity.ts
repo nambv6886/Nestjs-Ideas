@@ -1,5 +1,6 @@
-import { Table, Unique, AutoIncrement, Column, CreatedAt, IsEmail, Model } from "sequelize-typescript";
+import { Table, Unique, AutoIncrement, Column, CreatedAt, IsEmail, Model, HasMany } from "sequelize-typescript";
 import { CreateDateColumn } from "typeorm";
+import Idea from "../../idea/idea.entity";
 
 @Table({ tableName: 'user' })
 export default class UserEntity extends Model<UserEntity> {
@@ -11,7 +12,6 @@ export default class UserEntity extends Model<UserEntity> {
   @CreateDateColumn()
   createdAt: Date;
 
-
   @Unique
   @IsEmail
   @Column
@@ -22,5 +22,8 @@ export default class UserEntity extends Model<UserEntity> {
 
   @Column
   salt: string;
+
+  @HasMany(() => Idea)
+  ideas: Idea[];
 
 }
