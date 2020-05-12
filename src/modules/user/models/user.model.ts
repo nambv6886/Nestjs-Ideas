@@ -1,14 +1,17 @@
-import Idea from "../../idea/idea.entity";
+import { Idea } from "../../idea/idea.entity";
 
-export class UserModel {
+export class UserRO {
   id: number;
   username: string;
-  password: string;
   salt: string;
   createdAt: Date;
-  ideas: Idea[]
+  ideas: Idea[];
+  bookmarks: Idea[];
+  upVoteIdeas: Idea[];
+  downVoteIdeas: Idea[];
+  token: string;
 
-  constructor(fields: Partial<UserModel>) {
+  constructor(fields: Partial<UserRO>) {
     if (fields) {
       Object.assign(this, fields);
     }

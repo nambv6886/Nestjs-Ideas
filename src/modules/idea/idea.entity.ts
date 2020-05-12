@@ -1,28 +1,32 @@
-import { Table, Model, Unique, AutoIncrement, Column, BelongsTo, ForeignKey } from "sequelize-typescript";
-import { CreateDateColumn } from "typeorm";
+import { PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Column, ManyToOne, ManyToMany, JoinTable, Entity } from "typeorm";
+import { UserEntity } from "../user/user.entity";
 
-import UserEntity from "../user/models/user.entity";
-
-@Table({ tableName: 'idea' })
-export default class Idea extends Model<Idea> {
-  @Unique
-  @AutoIncrement
-  @Column({ primaryKey: true })
+@Entity('idea')
+export class Idea {
+  @PrimaryGeneratedColumn()
   id: number;
-
-  @Column
-  idea: string;
-
-  @Column
-  description: string;
 
   @CreateDateColumn()
   createdAt: Date;
 
-  @BelongsTo(() => UserEntity)
-  user: UserEntity;
+  @UpdateDateColumn()
+  updatedAt: Date;
 
-  @ForeignKey(() => UserEntity)
-  @Column({ field: 'user_id' })
-  userId: number;
+  @Column('text')
+  idea: string;
+
+  @Column('text')
+  description: string;
+
+  @ManyToOne(type => UserEntity, author => author.ideas)
+  author: UserEntity;
+
+  @ManyToMany(type => UserEntity)
+  @JoinTable()
+  upvotes: UserEntity[];
+
+  @ManyToMany(type => UserEntity)
+  @JoinTable()
+  downvotes: UserEntity[];
+
 }

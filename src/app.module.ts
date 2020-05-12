@@ -2,22 +2,33 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DatabaseModule } from './config/db.config.module';
 import { IdeaModule } from './modules/idea/idea.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { SharedModule } from './shared/shared.module';
-import { AuthService } from './modules/auth/auth.service';
+import { Connection } from 'typeorm';
 
 @Module({
   imports: [
-    DatabaseModule,
     IdeaModule,
     UserModule,
     AuthModule,
-    SharedModule
+    SharedModule,
+    TypeOrmModule.forRoot({
+      autoLoadEntities: true,
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: '123456',
+      database: 'test',
+      entities: ['src/modules/**/*.entity.ts, dist/modules/**/*.entity.js'],
+      synchronize: true,
+    })
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private connection: Connection) { }
+}
