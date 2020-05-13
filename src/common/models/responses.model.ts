@@ -1,5 +1,6 @@
-import { IdeaRO } from "../../modules/idea/idea.model";
+import { IdeaRO } from "../../modules/idea/models/idea.model";
 import { UserRO } from "../../modules/user/models/user.model";
+import { CommentEntity } from "src/modules/comment/models/comment.entity";
 
 export class ResponseMessage {
   status: number;
@@ -40,6 +41,17 @@ export class IdeaResponse extends ResponseMessage {
   idea: IdeaRO;
   ideas: IdeaRO[];
   constructor(fields?: Partial<IdeaResponse>) {
+    super(fields);
+    if (fields) {
+      Object.assign(this, fields);
+    }
+  }
+}
+
+export class CommentResponseMessage extends ResponseMessage {
+  comment: CommentEntity;
+  comments: CommentEntity[];
+  constructor(fields?: Partial<CommentResponseMessage>) {
     super(fields);
     if (fields) {
       Object.assign(this, fields);

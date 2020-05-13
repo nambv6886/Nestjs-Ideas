@@ -2,15 +2,15 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { IdeaRO } from './idea.model';
-import { IdeaDto } from './idea.dto';
+import { IdeaRO } from './models/idea.model';
+import { IdeaDto } from './models/Idea.dto';
 import { UserService } from '../user/user.service';
 import { Votes } from '../../common/enum/votes.enum';
 import { ResponseMessage, IdeaResponse, UserReponse, JwtPayload } from '../../common/models/responses.model';
 import logger from '../../common/utils/logger.util';
-import { Idea } from './idea.entity';
+import { Idea } from './models/idea.entity';
 import { UserRO } from '../user/models/user.model';
-import { UserEntity } from '../user/user.entity';
+import { UserEntity } from '../user/models/user.entity';
 
 @Injectable()
 export class IdeaService {
@@ -38,7 +38,7 @@ export class IdeaService {
 
 	public async findAll(): Promise<IdeaResponse> {
 		const ideas = await this.ideaRepository.find({
-			relations: ['author', 'upvotes', 'downvotes']
+			relations: ['author', 'upvotes', 'downvotes', 'comments']
 		});
 
 		const ideasRO = ideas.map(idea => this.ideaToReponseObject(idea));
@@ -51,7 +51,7 @@ export class IdeaService {
 	public async findOneById(id: number): Promise<IdeaResponse> {
 		const idea = await this.ideaRepository.findOne({
 			where: { id },
-			relations: ['author', 'upvotes', 'downvotes']
+			relations: ['author', 'upvotes', 'downvotes', 'comments']
 		});
 
 		const ideaRO = this.ideaToReponseObject(idea);
@@ -80,7 +80,7 @@ export class IdeaService {
 		try {
 			const idea = await this.ideaRepository.findOne({
 				where: { id },
-				relations: ['author', 'upvotes', 'downvotes']
+				relations: ['author', 'upvotes', 'downvotes', 'comments']
 			});
 
 			if (!idea) {
@@ -194,7 +194,7 @@ export class IdeaService {
 	public async upvote(id: number, userModel: JwtPayload) {
 		const idea = await this.ideaRepository.findOne({
 			where: { id },
-			relations: ['author', 'upvotes', 'downvotes']
+			relations: ['author', 'upvotes', 'downvotes', 'comment']
 		});
 		const user = await this.userRepository.findOne({ where: { id: userModel.userId } });
 		const ideaResponse = await this.vote(idea, user, Votes.UP);
@@ -210,7 +210,7 @@ export class IdeaService {
 	public async downvote(id: number, userModel: JwtPayload) {
 		const idea = await this.ideaRepository.findOne({
 			where: { id },
-			relations: ['author', 'upvotes', 'downvotes']
+			relations: ['author', 'upvotes', 'downvotes', 'comment']
 		});
 		const user = await this.userRepository.findOne({ where: { id: userModel.userId } });
 

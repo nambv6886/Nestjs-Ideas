@@ -1,4 +1,4 @@
-import { Idea } from "../../idea/idea.entity";
+import { Idea } from "../../idea/models/idea.entity";
 
 export class UserRO {
   id: number;

@@ -7,6 +7,7 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { SharedModule } from './shared/shared.module';
 import { Connection } from 'typeorm';
+import { CommentModule } from './modules/comment/comment.module';
 
 @Module({
   imports: [
@@ -22,9 +23,10 @@ import { Connection } from 'typeorm';
       username: 'root',
       password: '123456',
       database: 'test',
-      entities: ['src/modules/**/*.entity.ts, dist/modules/**/*.entity.js'],
+      entities: ['src/modules/**/**/*.entity.ts, dist/modules/**/**/*.entity.js'],
       synchronize: true,
-    })
+    }),
+    CommentModule
   ],
   controllers: [AppController],
   providers: [AppService],

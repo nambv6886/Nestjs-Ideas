@@ -8,7 +8,7 @@ import { LoginResponse, JwtPayload, ResponseMessage } from '../../common/models/
 import { JWT_SECRET_KEY } from '../../config/environment';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserEntity } from '../user/user.entity';
+import { UserEntity } from '../user/models/user.entity';
 
 
 @Injectable()

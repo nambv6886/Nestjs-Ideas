@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 import { UserModule } from '../user/user.module';
 import { SharedModule } from '../../shared/shared.module';
 import { JwtStrategy } from './jwt.strategy';
-import { UserEntity } from '../user/user.entity';
+import { UserEntity } from '../user/models/user.entity';
 
 @Module({
   imports: [

@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, CreateDateColumn, Column, OneToMany, ManyToMany, JoinTable } from "typeorm";
-import { Idea } from "../idea/idea.entity";
+import { Idea } from "../../idea/models/idea.entity";
+import { UserRO } from "./user.model";
 
 @Entity('user')
 export class UserEntity {
@@ -26,5 +27,24 @@ export class UserEntity {
   @ManyToMany(type => Idea)
   @JoinTable()
   bookmarks: Idea[];
+
+  toResponseObject(): UserRO {
+    const { id, createdAt, username } = this;
+    const responseObject = new UserRO({
+      id,
+      createdAt,
+      username
+    });
+
+    if (this.ideas) {
+      responseObject.ideas = this.ideas;
+    }
+
+    if (this.bookmarks) {
+      responseObject.bookmarks = this.bookmarks;
+    }
+
+    return responseObject;
+  }
 
 }

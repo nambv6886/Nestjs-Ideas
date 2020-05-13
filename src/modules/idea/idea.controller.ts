@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
 
 import { IdeaService } from './idea.service';
-import { IdeaDto } from './idea.dto';
+import { IdeaDto } from './models/Idea.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../user/current-user.decorator';
 import { IdeaResponse, JwtPayload } from '../../common/models/responses.model';

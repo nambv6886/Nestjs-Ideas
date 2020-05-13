@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { UserRO } from './models/user.model';
 import { UserDto } from './models/user.dto';
 import { ResponseMessage, UserReponse } from '../../common/models/responses.model';
-import { UserEntity } from './user.entity';
+import { UserEntity } from './models/user.entity';
 import logger from '../../common/utils/logger.util';
 
 @Injectable()

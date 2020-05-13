@@ -1,5 +1,5 @@
-import { UserRO } from "../user/models/user.model";
-import { UserEntity } from "../user/user.entity";
+import { UserRO } from "../../user/models/user.model";
+import { UserEntity } from "../../user/models/user.entity";
 
 export class IdeaRO {
   id: number;
