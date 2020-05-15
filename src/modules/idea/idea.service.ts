@@ -36,16 +36,27 @@ export class IdeaService {
 		return responseObject;
 	}
 
-	public async findAll(): Promise<IdeaResponse> {
-		const ideas = await this.ideaRepository.find({
-			relations: ['author', 'upvotes', 'downvotes', 'comments']
-		});
+	public async findAll(page = 1, pageSize = 5, newest?: boolean): Promise<IdeaResponse> {
+		try {
+			const ideas = await this.ideaRepository.find({
+				relations: ['author', 'upvotes', 'downvotes', 'comments'],
+				take: pageSize,
+				skip: pageSize * (page - 1),
+				order: newest && { createdAt: 'DESC' }
+			});
 
-		const ideasRO = ideas.map(idea => this.ideaToReponseObject(idea));
-		return new IdeaResponse({
-			ideas: ideasRO,
-			message: 'get all successfully'
-		})
+			const ideasRO = ideas.map(idea => this.ideaToReponseObject(idea));
+			return new IdeaResponse({
+				ideas: ideasRO,
+				message: 'get all successfully'
+			})
+		} catch (error) {
+			Logger.error(error.message, 'IdeaService:GetAll');
+			logger.error(error.message, 'IdeaService:GetAll');
+			return new IdeaResponse({
+				message: 'Common Error'
+			})
+		}
 	}
 
 	public async findOneById(id: number): Promise<IdeaResponse> {

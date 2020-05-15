@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 
 import { UserService } from '../user/user.service';
@@ -9,6 +9,8 @@ import { JWT_SECRET_KEY } from '../../config/environment';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../user/models/user.entity';
+import logger from '../../common/utils/logger.util';
+import { RoleEntity } from '../role/models/role.entity';
 
 
 @Injectable()
@@ -21,7 +23,7 @@ export class AuthService {
 
   public async doLogin(userDto: UserDto): Promise<LoginResponse> {
     try {
-      const user = await this.userRepository.findOne({ where: { username: userDto.username } })
+      const user = await this.userRepository.findOne({ where: { username: userDto.username }, relations: ['roles'] })
       if (!user) {
         return new LoginResponse({
           message: 'Email is wrong'
@@ -39,9 +41,16 @@ export class AuthService {
         })
       }
 
+      const roles = [];
+      for (const role of user.roles) {
+        console.log('roleName:', role.name);
+        roles.push(role.name);
+      }
+
       const jwtPayload: JwtPayload = {
         userId: user.id,
-        username: user.username
+        username: user.username,
+        roles
       };
 
       // expired in 1h
@@ -52,6 +61,8 @@ export class AuthService {
         accessToken
       });
     } catch (err) {
+      Logger.error(err.message, 'AuthService');
+      logger.error(err.message, 'AuthService');
       return new LoginResponse({
         message: 'Common Erros'
       })

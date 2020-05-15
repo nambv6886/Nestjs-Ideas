@@ -91,15 +91,17 @@ export class CommentService {
     }
   }
 
-  public async showByIdeaId(id: number): Promise<CommentResponseMessage> {
+  public async showByIdeaId(id: number, pageIndex = 1, pageSize = 5): Promise<CommentResponseMessage> {
     try {
-      const idea = await this.ideaRepository.findOne({
-        where: { id },
-        relations: ['comments', 'comments.author', 'comments.idea']
+      const comments = await this.commentRepository.find({
+        where: { idea: { id } },
+        relations: ['comments', 'comments.author', 'comments.idea'],
+        take: pageSize,
+        skip: pageSize * (pageIndex - 1)
       });
 
       return new CommentResponseMessage({
-        comments: idea.comments.map(comment => this.toResponseObject(comment))
+        comments: comments.map(comment => this.toResponseObject(comment))
       })
     } catch (error) {
       Logger.error(error.message, 'CommentService:ShowByIdeaID');
@@ -110,10 +112,12 @@ export class CommentService {
     }
   }
 
-  public async showByUserId(id: number) {
+  public async showByUserId(id: number, pageIndex = 1, pageSize = 5) {
     const comments = await this.commentRepository.find({
-      where: { author: id },
-      relations: ['author']
+      where: { author: { id } },
+      relations: ['author'],
+      take: pageSize,
+      skip: pageSize * (pageIndex - 1)
     });
 
     return comments.map(comment => this.toResponseObject(comment));

@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, CreateDateColumn, Column, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { Idea } from "../../idea/models/idea.entity";
 import { UserRO } from "./user.model";
+import { RoleEntity } from "src/modules/role/models/role.entity";
 
 @Entity('user')
 export class UserEntity {
@@ -27,6 +28,10 @@ export class UserEntity {
   @ManyToMany(type => Idea)
   @JoinTable()
   bookmarks: Idea[];
+
+  @ManyToMany(type => RoleEntity)
+  @JoinTable()
+  roles: RoleEntity[];
 
   toResponseObject(): UserRO {
     const { id, createdAt, username } = this;

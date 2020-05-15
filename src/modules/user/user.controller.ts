@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, Put, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Put, Delete, UseGuards, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRO } from './models/user.model';
 import { UserDto } from './models/user.dto';
@@ -6,6 +6,9 @@ import { ResponseMessage, LoginResponse, UserReponse, JwtPayload } from '../../c
 import { AuthService } from '../auth/auth.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from './current-user.decorator';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { RoleType } from '../../common/enum/roles.enum';
+import { RolesGuard } from '../../common/guards/roles.guard';
 
 @Controller('user')
 export class UserController {
@@ -25,9 +28,10 @@ export class UserController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
-  public async doFindAll(@CurrentUser() user: JwtPayload): Promise<UserReponse> {
-    return await this.userService.findAll();
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RoleType.ADMIN)
+  public async doFindAll(@CurrentUser() user: JwtPayload, @Query('pageIndex') pageIndex: number, @Query('pageSize') pageSize: number): Promise<UserReponse> {
+    return await this.userService.findAll(pageIndex, pageSize);
   }
 
   @Get(':id')

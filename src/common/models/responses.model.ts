@@ -1,6 +1,8 @@
 import { IdeaRO } from "../../modules/idea/models/idea.model";
 import { UserRO } from "../../modules/user/models/user.model";
 import { CommentEntity } from "src/modules/comment/models/comment.entity";
+import { RoleEntity } from "src/modules/role/models/role.entity";
+import { RoleType } from "../enum/roles.enum";
 
 export class ResponseMessage {
   status: number;
@@ -62,6 +64,7 @@ export class CommentResponseMessage extends ResponseMessage {
 export class JwtPayload {
   userId: number;
   username: string;
+  roles: RoleType[];
 
   constructor(fields?: Partial<JwtPayload>) {
     if (fields) {

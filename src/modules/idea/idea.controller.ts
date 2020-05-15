@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Query } from '@nestjs/common';
 
 import { IdeaService } from './idea.service';
 import { IdeaDto } from './models/Idea.dto';
@@ -6,6 +6,8 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../user/current-user.decorator';
 import { IdeaResponse, JwtPayload } from '../../common/models/responses.model';
 import { UserRO } from '../user/models/user.model';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { RoleType } from 'src/common/enum/roles.enum';
 
 @Controller('idea')
 export class IdeaController {
@@ -16,12 +18,18 @@ export class IdeaController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  showAllIdeas(@CurrentUser() user: JwtPayload): Promise<IdeaResponse> {
-    return this.ideaService.findAll();
+  showAllIdeas(@CurrentUser() user: JwtPayload, @Query('page') page: number, @Query('pageSize') pageSize: number): Promise<IdeaResponse> {
+    return this.ideaService.findAll(page, pageSize);
+  }
+
+  @Get('newest')
+  showNewestIdea(@Query('page') page: number, @Query('pageSize') pageSize: number) {
+    return this.ideaService.findAll(page, pageSize, true);
   }
 
   @Post()
   @UseGuards(JwtAuthGuard)
+  @Roles(RoleType.USER)
   createIdea(@CurrentUser() user: JwtPayload, @Body() idea: IdeaDto): Promise<IdeaResponse> {
     return this.ideaService.create(user, idea);
   }

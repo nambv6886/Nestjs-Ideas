@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards, Post, Body, Delete } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards, Post, Body, Delete, Query } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../user/current-user.decorator';
@@ -12,13 +12,13 @@ export class CommentController {
   ) { }
 
   @Get("idea/:id")
-  showCommentByIdeaId(@Param('id') ideaId: number) {
-    return this.commentService.showByIdeaId(ideaId);
+  showCommentByIdeaId(@Param('id') ideaId: number, @Query('pageIndex') pageIndex: number, @Query('pageSize') pageSize: number) {
+    return this.commentService.showByIdeaId(ideaId, pageIndex, pageSize);
   }
 
   @Get('user/:id')
-  showCommentByUserID(@Param('id') userId: number) {
-    return this.commentService.showByUserId(userId);
+  showCommentByUserID(@Param('id') userId: number, @Query('pageIndex') pageIndex: number, @Query('pageSize') pageSize: number) {
+    return this.commentService.showByUserId(userId, pageIndex, pageSize);
   }
 
   @Post('idea/:id')

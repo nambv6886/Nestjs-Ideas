@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { SharedModule } from './shared/shared.module';
 import { Connection } from 'typeorm';
 import { CommentModule } from './modules/comment/comment.module';
+import { RoleModule } from './modules/role/role.module';
 
 @Module({
   imports: [
@@ -25,8 +26,10 @@ import { CommentModule } from './modules/comment/comment.module';
       database: 'test',
       entities: ['src/modules/**/**/*.entity.ts, dist/modules/**/**/*.entity.js'],
       synchronize: true,
+      // dropSchema: true
     }),
-    CommentModule
+    CommentModule,
+    RoleModule
   ],
   controllers: [AppController],
   providers: [AppService],

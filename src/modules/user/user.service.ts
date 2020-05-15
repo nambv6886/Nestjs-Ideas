@@ -8,11 +8,14 @@ import { UserDto } from './models/user.dto';
 import { ResponseMessage, UserReponse } from '../../common/models/responses.model';
 import { UserEntity } from './models/user.entity';
 import logger from '../../common/utils/logger.util';
+import { RoleEntity } from '../role/models/role.entity';
+import { RoleType } from 'src/common/enum/roles.enum';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>
+    @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
+    @InjectRepository(RoleEntity) private roleRepository: Repository<RoleEntity>
   ) { }
 
   public toResponseObject(entity: UserEntity): UserRO {
@@ -33,9 +36,11 @@ export class UserService {
     return responseObject;
   }
 
-  public async findAll(): Promise<UserReponse> {
+  public async findAll(pageIndex = 1, pageSize = 5): Promise<UserReponse> {
     const users = await this.userRepository.find({
-      relations: ['ideas', 'bookmarks']
+      relations: ['ideas', 'bookmarks'],
+      take: pageSize,
+      skip: pageSize * (pageIndex - 1)
     });
 
     const userResponse = users.map(user => this.toResponseObject(user));
@@ -67,16 +72,20 @@ export class UserService {
         });
       }
 
+      const roleUser = await this.roleRepository.findOne({
+        where: { name: RoleType.USER }
+      });
+
       const salt = await bcrypt.genSalt();
       const hashPassword = await bcrypt.hash(userDto.password, salt);
 
       const data = {
         username: userDto.username,
         salt,
-        password: hashPassword
+        password: hashPassword,
       };
 
-      const user = await this.userRepository.create(data);
+      const user = await this.userRepository.create({ ...data, roles: [roleUser] });
       const result = await this.userRepository.save(user);
       if (!result) {
         return new UserReponse({
