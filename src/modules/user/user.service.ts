@@ -38,7 +38,7 @@ export class UserService {
 
   public async findAll(pageIndex = 1, pageSize = 5): Promise<UserReponse> {
     const users = await this.userRepository.find({
-      relations: ['ideas', 'bookmarks'],
+      relations: ['ideas', 'bookmarks', 'roles'],
       take: pageSize,
       skip: pageSize * (pageIndex - 1)
     });
@@ -51,7 +51,10 @@ export class UserService {
   }
 
   public async findById(id: number): Promise<UserReponse> {
-    const userFound = await this.userRepository.findOne({ where: { id } });
+    const userFound = await this.userRepository.findOne({
+      where: { id },
+      relations: ['ideas', 'bookmarks', 'roles']
+    });
     return new UserReponse({
       user: this.toResponseObject(userFound)
     })

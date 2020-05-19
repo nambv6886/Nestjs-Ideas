@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import * as cache from 'cache-manager';
+import * as cache from 'memory-cache';
 import { CommonUtils } from '../../common/utils/common.util';
 
-const memoryCache = cache.caching({
-  store: 'memory',
-  max: 1000,
-  ttl: 3600
-})
+// const memoryCache = cache.caching({
+//   store: 'memory',
+//   max: 1000,
+//   ttl: 3600
+// })
 
 @Injectable()
 export class CacheService {
@@ -15,7 +15,7 @@ export class CacheService {
       throw Error('Cache key and value is required');
     }
 
-    memoryCache.set(key, value, durationInSecond, timeoutCallback);
+    cache.put(key, value, durationInSecond, timeoutCallback);
   }
 
   public get<T>(key: string): T {
@@ -23,6 +23,6 @@ export class CacheService {
       throw Error('Cache key is required');
     }
 
-    return memoryCache.get(key) as T;
+    return cache.get(key) as T;
   }
 }

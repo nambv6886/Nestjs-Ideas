@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, Put, Delete, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Put, Delete, UseGuards, Query, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRO } from './models/user.model';
 import { UserDto } from './models/user.dto';
@@ -9,6 +9,7 @@ import { CurrentUser } from './current-user.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { RoleType } from '../../common/enum/roles.enum';
 import { RolesGuard } from '../../common/guards/roles.guard';
+import { RefreshTokenDto } from '../refresh-token/models/refreshToken.dto';
 
 @Controller('user')
 export class UserController {
@@ -27,6 +28,18 @@ export class UserController {
     return await this.userService.create(userDto);
   }
 
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  public async doLogout(@Body() refreshToken: RefreshTokenDto, @CurrentUser() currentUser, @Req() request) {
+    return await this.authService.doLogout(currentUser, request.headers.authorization, refreshToken.refreshToken);
+  }
+
+  @Post('refreshToken')
+  @UseGuards(JwtAuthGuard)
+  public async doRefreshToken(@CurrentUser() currentUser: JwtPayload, @Body() token: RefreshTokenDto) {
+    return await this.authService.doRefreshToken(currentUser, token);
+  }
+
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RoleType.ADMIN)
@@ -35,21 +48,24 @@ export class UserController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   public async doFindById(@Param('id') id: number): Promise<UserReponse> {
     return await this.userService.findById(id);
   }
 
-  @Post()
-  public async doCreate(@Body() userDto: UserDto): Promise<ResponseMessage> {
-    return await this.userService.create(userDto);
-  }
+  // @Post()
+  // public async doCreate(@Body() userDto: UserDto): Promise<ResponseMessage> {
+  //   return await this.userService.create(userDto);
+  // }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   public async doUpdate(@Param('id') id: number, @Body() userDto: UserDto): Promise<UserReponse> {
     return await this.userService.update(id, userDto);
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   public async doDelete(@Param('id') id: number): Promise<UserReponse> {
     return await this.userService.delete(id);
   }

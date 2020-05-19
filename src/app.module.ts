@@ -9,6 +9,7 @@ import { SharedModule } from './shared/shared.module';
 import { Connection } from 'typeorm';
 import { CommentModule } from './modules/comment/comment.module';
 import { RoleModule } from './modules/role/role.module';
+import { RefreshTokenModule } from './modules/refresh-token/refresh-token.module';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { RoleModule } from './modules/role/role.module';
       // dropSchema: true
     }),
     CommentModule,
-    RoleModule
+    RoleModule,
+    RefreshTokenModule
   ],
   controllers: [AppController],
   providers: [AppService],

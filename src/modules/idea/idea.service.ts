@@ -11,13 +11,15 @@ import logger from '../../common/utils/logger.util';
 import { Idea } from './models/idea.entity';
 import { UserRO } from '../user/models/user.model';
 import { UserEntity } from '../user/models/user.entity';
+import { SocketGateway } from '../../shared/socket.gateway';
 
 @Injectable()
 export class IdeaService {
 	constructor(
 		@InjectRepository(Idea) private ideaRepository: Repository<Idea>,
 		private readonly userService: UserService,
-		@InjectRepository(UserEntity) private userRepository: Repository<UserEntity>
+		@InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
+		private readonly gateway: SocketGateway
 	) { }
 
 	private ideaToReponseObject(idea: Idea): IdeaRO {
@@ -78,6 +80,9 @@ export class IdeaService {
 
 			await this.ideaRepository.save(idea);
 			const ideaRO = this.ideaToReponseObject(idea);
+
+			this.gateway.socket.emit('newIdea', ideaRO);
+
 			return new IdeaResponse({
 				idea: ideaRO
 			})

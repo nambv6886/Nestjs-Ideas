@@ -19,6 +19,7 @@ export class ResponseMessage {
 
 export class LoginResponse extends ResponseMessage {
   accessToken: string;
+  refreshToken: string;
 
   constructor(fields?: Partial<LoginResponse>) {
     super(fields);
@@ -55,6 +56,26 @@ export class CommentResponseMessage extends ResponseMessage {
   comments: CommentEntity[];
   constructor(fields?: Partial<CommentResponseMessage>) {
     super(fields);
+    if (fields) {
+      Object.assign(this, fields);
+    }
+  }
+}
+
+export class RefreshTokenRespose extends ResponseMessage {
+  refreshToken: string;
+  constructor(fields?: Partial<RefreshTokenRespose>) {
+    super(fields);
+    if (fields) {
+      Object.assign(this, fields);
+    }
+  }
+}
+
+export class RefreshTokenPayload {
+  userId: number;
+  key: string;
+  constructor(fields?: Partial<RefreshTokenPayload>) {
     if (fields) {
       Object.assign(this, fields);
     }
