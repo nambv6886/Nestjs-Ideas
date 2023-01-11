@@ -33,7 +33,7 @@
     "bcryptjs": "^2.4.3",
     "cache-manager": "^3.3.0",
     "class-transformer": "^0.2.3",
-    "class-validator": "^0.12.2",
+    "class-validator": "^0.14.0",
     "cryptojs": "^2.5.3",
     "dotenv": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
